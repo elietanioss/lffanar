@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+/* Design tokens for the Hyper‑Geometric dark theme */
+:root {
+  --background: #0a0a0a; /* Deep Space */
+  --foreground: #f8fafc; /* Near white */
+
+  /* Pure red / green / white accents */
+  --color-primary: #ff0000; /* Red */
+  --color-secondary: #00ff00; /* Green */
+
+  --radius-md: 0.75rem;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--color-primary);
+  --color-secondary: var(--color-secondary);
+
+  /* Wire Tailwind fonts to our Next.js font variables (set in layout.tsx) */
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-mono);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+.app-shell {
+  @apply min-h-screen w-full overflow-hidden bg-background text-foreground;
+}
+
+.app-shell__content {
+  @apply pointer-events-none relative z-10 flex min-h-screen flex-col;
+}
+
+.app-shell__page {
+  @apply pointer-events-auto flex-1 px-4 pb-10 pt-24 sm:px-8 lg:px-16;
+}
+
+.glass-panel {
+  @apply rounded-[var(--radius-md)] border border-white/5 bg-white/5 p-4 shadow-lg shadow-black/60 backdrop-blur-xl;
+}
+
+.card-pop {
+  @apply transform-gpu transition-all duration-300 ease-out hover:-translate-y-1 hover:scale-[1.03] hover:shadow-2xl hover:shadow-black/80 hover:border-primary;
+}
+
+.neon-heading {
+  @apply font-mono tracking-[0.2em] uppercase text-sm text-secondary;
+}
+
+.nav-link {
+  @apply text-sm font-mono uppercase tracking-[0.18em] text-slate-300 transition-colors hover:text-primary;
+}
