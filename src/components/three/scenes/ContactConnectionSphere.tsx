@@ -1,7 +1,7 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { Group, LineSegments, Vector3 } from "three";
+import { useRef, useState, useMemo } from "react";
+import { Group, LineSegments, Vector3, BufferGeometry, Float32BufferAttribute } from "three";
 import { useFrame } from "@react-three/fiber";
 
 const connectionPoints = Array.from({ length: 42 }, (_, i) => {
@@ -29,7 +29,10 @@ export function ContactConnectionSphere() {
 
     if (linesRef.current) {
       const a = 0.6 + (hovered ? 0.3 : 0);
-      linesRef.current.material.opacity = a;
+      const mat = linesRef.current.material;
+      if (!Array.isArray(mat)) {
+        mat.opacity = a;
+      }
     }
   });
 
@@ -38,6 +41,12 @@ export function ContactConnectionSphere() {
   connectionPoints.forEach((p) => {
     positions.push(center.x, center.y, center.z, p.x, p.y, p.z);
   });
+
+  const geometry = useMemo(() => {
+    const geo = new BufferGeometry();
+    geo.setAttribute("position", new Float32BufferAttribute(positions, 3));
+    return geo;
+  }, [positions]);
 
   return (
     <>
@@ -58,15 +67,7 @@ export function ContactConnectionSphere() {
             metalness={0.6}
           />
         </mesh>
-        <lineSegments ref={linesRef}>
-          <bufferGeometry>
-            <bufferAttribute
-              attach="attributes-position"
-              count={positions.length / 3}
-              array={new Float32Array(positions)}
-              itemSize={3}
-            />
-          </bufferGeometry>
+        <lineSegments ref={linesRef} geometry={geometry}>
           <lineBasicMaterial
             color={"#ff0000"}
             transparent
