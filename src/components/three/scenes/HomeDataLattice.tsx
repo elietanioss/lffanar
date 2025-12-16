@@ -6,9 +6,12 @@ import { useFrame } from "@react-three/fiber";
 
 const tempObject = new Object3D();
 
+import { useMobile } from "../../../hooks/useMobile";
+
 export function HomeDataLattice() {
   const meshRef = useRef<InstancedMesh>(null!);
   const groupRef = useRef<Group>(null!);
+  const isMobile = useMobile();
 
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime();
@@ -21,7 +24,8 @@ export function HomeDataLattice() {
     if (!mesh) return;
 
     let i = 0;
-    const gridSize = 10;
+    // Reduce grid size on mobile
+    const gridSize = isMobile ? 6 : 10;
     const spacing = 0.8;
 
     for (let x = -gridSize; x <= gridSize; x++) {
@@ -37,7 +41,8 @@ export function HomeDataLattice() {
     mesh.instanceMatrix.needsUpdate = true;
   });
 
-  const count = (10 * 2 + 1) * (10 * 2 + 1);
+  const gridSize = isMobile ? 6 : 10;
+  const count = (gridSize * 2 + 1) * (gridSize * 2 + 1);
 
   return (
     <>
@@ -45,7 +50,7 @@ export function HomeDataLattice() {
       <color attach="background" args={["#050009"]} />
       <group ref={groupRef} position={[0, 0, 0]}>
         <instancedMesh ref={meshRef} args={[undefined, undefined, count]}>
-          <sphereGeometry args={[0.5, 12, 12]} />
+          <sphereGeometry args={[0.5, isMobile ? 8 : 12, isMobile ? 8 : 12]} />
           <meshStandardMaterial
             color={"#ff0000"}
             emissive={"#ff0000"}

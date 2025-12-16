@@ -141,13 +141,19 @@ function CameraTransitions() {
   return null;
 }
 
+import { useMobile } from "../../hooks/useMobile";
+
 export function ThreeRoot() {
+  const isMobile = useMobile();
+  // Lower max DPR on mobile to save battery and performance
+  const dpr: [number, number] = isMobile ? [0.6, 1.5] : [0.8, 2];
+
   return (
     <div className="pointer-events-none fixed inset-0 z-0">
       <Canvas
-        dpr={[0.8, 2]}
+        dpr={dpr}
         camera={{ position: [0, 0, 12], fov: 50 }}
-        gl={{ antialias: true, alpha: true }}
+        gl={{ antialias: !isMobile, alpha: true }} // Optional: disable AA on mobile
       >
         <Suspense fallback={null}>
           <SceneRouter />

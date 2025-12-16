@@ -6,9 +6,12 @@ import { useFrame } from "@react-three/fiber";
 
 const temp = new Object3D();
 
+import { useMobile } from "../../../hooks/useMobile";
+
 export function EventsTimeline() {
   const meshRef = useRef<InstancedMesh>(null!);
   const groupRef = useRef<Group>(null!);
+  const isMobile = useMobile();
 
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime();
@@ -42,7 +45,7 @@ export function EventsTimeline() {
     mesh.instanceMatrix.needsUpdate = true;
   });
 
-  const count = 64;
+  const count = isMobile ? 32 : 64;
 
   return (
     <>

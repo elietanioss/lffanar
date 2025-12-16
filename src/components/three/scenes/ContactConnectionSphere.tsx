@@ -15,10 +15,13 @@ const connectionPoints = Array.from({ length: 42 }, (_, i) => {
   );
 });
 
+import { useMobile } from "../../../hooks/useMobile";
+
 export function ContactConnectionSphere() {
   const groupRef = useRef<Group>(null!);
   const linesRef = useRef<LineSegments>(null!);
   const [hovered, setHovered] = useState(false);
+  const isMobile = useMobile();
 
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime();
@@ -38,7 +41,11 @@ export function ContactConnectionSphere() {
 
   const positions: number[] = [];
   const center = new Vector3(0, 0, 0);
-  connectionPoints.forEach((p) => {
+
+  // Slice connection points for mobile optimization
+  const pointsToUse = isMobile ? connectionPoints.slice(0, 20) : connectionPoints;
+
+  pointsToUse.forEach((p) => {
     positions.push(center.x, center.y, center.z, p.x, p.y, p.z);
   });
 
@@ -58,7 +65,7 @@ export function ContactConnectionSphere() {
         onPointerOut={() => setHovered(false)}
       >
         <mesh>
-          <sphereGeometry args={[1.6, 48, 48]} />
+          <sphereGeometry args={[1.6, isMobile ? 24 : 48, isMobile ? 24 : 48]} />
           <meshStandardMaterial
             color={"#00ff00"}
             emissive={"#00ff00"}
